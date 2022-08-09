@@ -1,26 +1,75 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import TextField from "@mui/material/TextField";
+import { spacing } from '@mui/system';
+import "./App.css";
 
 function App() {
+  const [cryptoName, setCryptoName] = useState("");
+  const [cryptoInfo, setCryptoInfo] = useState<undefined | any>(
+    undefined
+  );
+  const CRYPTO_BASE_URL = "https://api.coincap.io/v2/assets/";
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div style={{paddingLeft: "1.5em"}}>
+      <h1>Cryptocurrency Search</h1>
+
+      <div>
+        <TextField
+          id="search-bar"
+          className="text"
+          value={cryptoName}
+          onChange={(prop: any) => {
+            setCryptoName(prop.target.value);
+          }}
+          label="Enter cryptocurrency name..."
+          variant="outlined"
+          placeholder="Search..."
+          size="small"
+        />
+        <IconButton
+          aria-label="search"
+          sx={{mb:1}}
+          onClick={() => {
+            search();
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <SearchIcon style={{ fill: "blue" }} />
+        </IconButton>
+      </div>
+
+      {cryptoInfo === undefined ? (
+        <p>Enter a cryptocurrency name</p>
+      ) : (
+        <div id="pokemon-result">
+          {cryptoInfo.data.name}
+          <br></br>
+          {cryptoInfo.data.symbol}
+          <br></br>
+          {cryptoInfo.data.priceUsd}
+        </div>
+      )}
+
+      <p>Crypto Entered: {cryptoName.toLocaleUpperCase()}</p>
     </div>
   );
+
+  function search() {
+    console.log(CRYPTO_BASE_URL + cryptoName);
+    axios
+      .get(CRYPTO_BASE_URL + cryptoName.toLowerCase())
+      .then((res) => {
+        setCryptoInfo(res.data);
+        console.log(cryptoInfo);
+      })
+      .catch((err) => {
+        console.log("Pokemon not found");
+        setCryptoInfo(undefined);
+      });
+  }
 }
 
 export default App;
