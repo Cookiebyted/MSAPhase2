@@ -14,7 +14,7 @@ function App() {
   const CRYPTO_BASE_URL = "https://api.coincap.io/v2/assets/";
 
   return (
-    <div style={{paddingLeft: "1.5em"}}>
+    <div style={{paddingLeft: "1.5em", textAlign:"center"}}>
       <h1>Cryptocurrency Search</h1>
 
       <div>
